@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/index.css"/>
+  <style lang="">
+    .container {
+      border: 1px solid red;
+      height: 500px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <button class="add">添加一个div</button>
+  <div class="container"></div>
+  <h2>当前样式</h2>
+  <p class="currentEleStyle">
+  </p>
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script>
+    $('.add').on('click', function () {
+      var parent = $('.container')
+      var ele = createAnElement('div', parent)
+      $('p.currentEleStyle')[0].innerHTML = ''
+      $('p.currentEleStyle')[0].append('坐标（x）:' + ele.style.left)
+      $('p.currentEleStyle')[0].append('坐标（y）:' + ele.style.top)
+      $('p.currentEleStyle')[0].append('宽度:' + ele.style.width)
+      $('p.currentEleStyle')[0].append('高度:' + ele.style.height)
+    })
+    function createAnElement(name, parent) {
+      var newObj = {
+        element:{},
+        style: {}
+      }
+      var wrapper = document.createElement('div')
+      $(wrapper).addClass('wrapper')
+      var ele = document.createElement(name)
+      $(ele).css({
+        'background': 'blue',
+        'position': 'absolute',
+        'left': '0',
+        'top': '0',
+        'right': '0',
+        'bottom': '0',
+        'margin': 'auto',
+        'width': '100px',
+        'height': '100px'
+      })
+      var operate = document.createElement('div')
+      $(operate).addClass('operate')
+      $(wrapper).append(ele)
+      $(wrapper).append(operate)
+      // var operate = document.createElement('div')
+      // operate.addClass('operate')
+      parent.append(wrapper)
+      newObj.element = ele
+      newObj.style = wrapper.style
+      return newObj
+    }
+    function createOperationNode () {
+      
+    }
+  </script>
+</body>
+</html>
