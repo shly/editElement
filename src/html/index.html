@@ -38,30 +38,38 @@
       var wrapper = document.createElement('div')
       $(wrapper).addClass('wrapper')
       var ele = document.createElement(name)
-      $(ele).css({
-        'background': 'blue',
-        'position': 'absolute',
-        'left': '0',
-        'top': '0',
-        'right': '0',
-        'bottom': '0',
-        'margin': 'auto',
-        'width': '100px',
-        'height': '100px'
-      })
+      // $(ele).css({
+      //   'background': 'blue',
+      //   'position': 'absolute',
+      //   'left': '0',
+      //   'top': '0',
+      //   'right': '0',
+      //   'bottom': '0',
+      //   'margin': 'auto',
+      //   'width': '100px',
+      //   'height': '100px'
+      // })
       var operate = document.createElement('div')
-      $(operate).addClass('operate')
       $(wrapper).append(ele)
-      $(wrapper).append(operate)
-      // var operate = document.createElement('div')
-      // operate.addClass('operate')
+      var operateContent = createOperationNode()
+      $(wrapper).append($(operateContent))
       parent.append(wrapper)
       newObj.element = ele
       newObj.style = wrapper.style
       return newObj
     }
     function createOperationNode () {
-      
+      var operateContent = '<div class="operate">'
+      +  '<div class="circleArea tl"></div>'
+      +  '<div class="circleArea bl"></div>'
+      +  '<div class="circleArea tr"></div>'
+      +  '<div class="circleArea br"></div>'
+      +  '<div class="rectangleArea t"></div>'
+      +  '<div class="rectangleArea l"></div>'
+      +  '<div class="rectangleArea r"></div>'
+      +  '<div class="rectangleArea b"></div>'
+     + ' </div> '
+     return operateContent
     }
   </script>
 </body>
