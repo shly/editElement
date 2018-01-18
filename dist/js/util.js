@@ -15,13 +15,13 @@ var createElementUtil = {};
   var ele = {};
 
   var MouseUtil = {
-    onMouseDown: function onMouseDown(e) {
+    onMouseDown: function onMouseDown() {
       pos = {
-        x: e.clientX,
-        y: e.clientY
+        x: event.clientX,
+        y: event.clientY
       };
     },
-    onMouseMove: function onMouseMove(event) {
+    onMouseMove: function onMouseMove() {
       var newPos = {
         x: event.clientX,
         y: event.clientY
@@ -31,9 +31,9 @@ var createElementUtil = {};
       resetPosition(width, height);
       pos = JSON.parse(JSON.stringify(newPos));
     },
-    onMouseUp: function onMouseUp(e) {
-      $(e.target).off('mousemove');
-      $(e.target).off('mouseup');
+    onMouseUp: function onMouseUp() {
+      $(event.target).off('mousemove');
+      $(event.target).off('mouseup');
     }
   };
   createElementUtil = {
@@ -43,18 +43,14 @@ var createElementUtil = {};
       var operateContent = createOperationNode();
       $(wrapper).append($(operateContent));
       parent.append(wrapper);
-      $('.operate .circleArea').on('mousedown', function (event) {
+      $('.operate .circleArea').on('mousedown', function () {
         ele = $(event.target);
-        MouseUtil.onMouseDown(event);
-        ele.on('mousemove', function (event) {
-          MouseUtil.onMouseMove(event);
+        MouseUtil.onMouseDown();
+        ele.on('mousemove', function () {
+          MouseUtil.onMouseMove();
         });
-        ele.on('mouseup', function (event) {
-          MouseUtil.onMouseUp(event);
-        });
-        ele.on('mouseleave', function (event) {
-          MouseUtil.onMouseUp(event);
-        });
+        ele.on('mouseup', MouseUtil.onMouseUp);
+        ele.on('mouseleave', MouseUtil.onMouseUp);
       });
       $('.operate .rectangleArea').on('mousedown', function (event) {
         ele = $(event.target);
@@ -66,6 +62,7 @@ var createElementUtil = {};
           MouseUtil.onMouseUp(event);
         });
         ele.on('mouseleave', function (event) {
+          console.log('@@@@');
           MouseUtil.onMouseUp(event);
         });
       });

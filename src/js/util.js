@@ -13,13 +13,13 @@ var createElementUtil = {}
   let ele = {}
  
   var MouseUtil = {
-    onMouseDown: function(e) {
+    onMouseDown: function () {
       pos = {
-        x: e.clientX,
-        y: e.clientY
+        x: event.clientX,
+        y: event.clientY
       }
     },
-    onMouseMove: function (event) {
+    onMouseMove: function () {
       let newPos = {
         x: event.clientX,
         y: event.clientY
@@ -29,9 +29,9 @@ var createElementUtil = {}
       resetPosition(width, height)
       pos = JSON.parse(JSON.stringify(newPos))
     },
-    onMouseUp: function (e) {
-      $(e.target).off('mousemove')
-      $(e.target).off('mouseup')
+    onMouseUp: function () {
+      $(event.target).off('mousemove')
+      $(event.target).off('mouseup')
     }
   }
   createElementUtil = {
@@ -41,18 +41,14 @@ var createElementUtil = {}
       let operateContent = createOperationNode()
       $(wrapper).append($(operateContent))
       parent.append(wrapper)
-      $('.operate .circleArea').on('mousedown', function (event) {
+      $('.operate .circleArea').on('mousedown', function () {
         ele = $(event.target)
-        MouseUtil.onMouseDown(event)
-        ele.on('mousemove', function (event) {
-          MouseUtil.onMouseMove(event)
+        MouseUtil.onMouseDown()
+        ele.on('mousemove', function () {
+          MouseUtil.onMouseMove()
         })
-        ele.on('mouseup', function (event) {
-          MouseUtil.onMouseUp(event)
-        })
-        ele.on('mouseleave', function (event) {
-          MouseUtil.onMouseUp(event)
-        })
+        ele.on('mouseup', MouseUtil.onMouseUp)
+        ele.on('mouseleave', MouseUtil.onMouseUp)
       })
       $('.operate .rectangleArea').on('mousedown', function (event) {
         ele = $(event.target)
@@ -64,6 +60,7 @@ var createElementUtil = {}
           MouseUtil.onMouseUp(event)
         })
         ele.on('mouseleave', function (event) {
+          console.log('@@@@')
           MouseUtil.onMouseUp(event)
         })
       })
