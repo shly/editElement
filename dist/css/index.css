@@ -2,11 +2,8 @@
   position: absolute;
   width: 100px;
   height: 100px;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
+  left: 600px;
+  top: 300px;
 }
 .wrapper .operate {
   position: absolute;
@@ -22,13 +19,73 @@
   border-radius: 50%;
   border: 1px solid #ddd;
   position: absolute;
+  background: #fff;
+  z-index: 1;
 }
 .wrapper .operate .circleArea.tl {
   top: -5px;
-  left: 0px;
+  left: -5px;
+}
+.wrapper .operate .circleArea.tl:hover {
+  cursor: nw-resize;
+}
+.wrapper .operate .circleArea.tr {
+  top: -5px;
+  right: -5px;
+}
+.wrapper .operate .circleArea.tr:hover {
+  cursor: ne-resize;
+}
+.wrapper .operate .circleArea.bl {
+  bottom: -5px;
+  left: -5px;
+}
+.wrapper .operate .circleArea.bl:hover {
+  cursor: ne-resize;
+}
+.wrapper .operate .circleArea.br {
+  bottom: -5px;
+  right: -5px;
+}
+.wrapper .operate .circleArea.br:hover {
+  cursor: nw-resize;
 }
 .wrapper .operate .rectangleArea {
   width: 10px;
   height: 10px;
   border: 1px solid #ddd;
+  position: absolute;
+  z-index: 1;
+}
+.wrapper .operate .rectangleArea.t {
+  background: #fff;
+  top: -7px;
+  left: 45px;
+}
+.wrapper .operate .rectangleArea.t:hover {
+  cursor: n-resize;
+}
+.wrapper .operate .rectangleArea.b {
+  background: #fff;
+  bottom: -7px;
+  left: 45px;
+}
+.wrapper .operate .rectangleArea.b:hover {
+  cursor: n-resize;
+}
+.wrapper .operate .rectangleArea.l {
+  background: #fff;
+  left: -7px;
+  top: 45px;
+}
+.wrapper .operate .rectangleArea.l:hover {
+  cursor: e-resize;
+}
+.wrapper .operate .rectangleArea.r {
+  background: #fff;
+  right: -7px;
+  top: 45px;
+}
+.wrapper .operate .rectangleArea.r:hover {
+  cursor: e-resize;
 }
