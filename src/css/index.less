@@ -1,3 +1,5 @@
+@borderColor: #ddd;
+@width: 10px;
 .wrapper {
   position: absolute;
   width: 100px;
@@ -13,12 +15,22 @@
     right: 0;
     top: 0;
     bottom: 0;
-    outline: 1px dashed#ddd;
+    outline: 1px dashed @borderColor;
     .circleArea {
-      width: 10px;
-      height: 10px;
+      width: @width;
+      height: @width;
       border-radius: 50%;
-      border: 1px dashed#ddd;
+      border: 1px solid @borderColor;
+      position: absolute;
+      &.tl {
+        top: -5px;
+        left: 0px;
+      }
+    }
+    .rectangleArea {
+      width: @width;
+      height: @width;
+      border: 1px solid @borderColor;
     }
   }
 }

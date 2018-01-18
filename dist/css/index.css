@@ -14,11 +14,21 @@
   right: 0;
   top: 0;
   bottom: 0;
-  outline: 1px dashed#ddd;
+  outline: 1px dashed #ddd;
 }
 .wrapper .operate .circleArea {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1px dashed#ddd;
+  border: 1px solid #ddd;
+  position: absolute;
+}
+.wrapper .operate .circleArea.tl {
+  top: -5px;
+  left: 0px;
+}
+.wrapper .operate .rectangleArea {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #ddd;
 }
