@@ -30,8 +30,8 @@ var createElementUtil = {}
       pos = JSON.parse(JSON.stringify(newPos))
     },
     onMouseUp: function () {
-      $(event.target).off('mousemove')
-      $(event.target).off('mouseup')
+      $(document).off('mousemove')
+      $(document).off('mouseup')
     }
   }
   createElementUtil = {
@@ -41,27 +41,13 @@ var createElementUtil = {}
       let operateContent = createOperationNode()
       $(wrapper).append($(operateContent))
       parent.append(wrapper)
-      $('.operate .circleArea').on('mousedown', function () {
+      $(document).on('mousedown', '.operate_btn', function () {
         ele = $(event.target)
         MouseUtil.onMouseDown()
-        ele.on('mousemove', function () {
+        $(document).on('mousemove', function () {
           MouseUtil.onMouseMove()
-        })
-        ele.on('mouseup', MouseUtil.onMouseUp)
-        ele.on('mouseleave', MouseUtil.onMouseUp)
-      })
-      $('.operate .rectangleArea').on('mousedown', function (event) {
-        ele = $(event.target)
-        MouseUtil.onMouseDown(event)
-        ele.on('mousemove', function (event) {
-          MouseUtil.onMouseMove(event)
-        })
-        ele.on('mouseup', function (event) {
-          MouseUtil.onMouseUp(event)
-        })
-        ele.on('mouseleave', function (event) {
-          console.log('@@@@')
-          MouseUtil.onMouseUp(event)
+        }).on('mouseup', function () {
+          MouseUtil.onMouseUp()
         })
       })
       newObj.element = ele
@@ -71,73 +57,92 @@ var createElementUtil = {}
   }
   function createOperationNode() {
     var operateContent = `<div class="operate">
-        <div class="circleArea tl"></div>
-        <div class="circleArea bl"></div>
-        <div class="circleArea tr"></div>
-        <div class="circleArea br"></div>
-        <div class="rectangleArea t"></div>
-        <div class="rectangleArea l"></div>
-        <div class="rectangleArea r"></div>
-        <div class="rectangleArea b"></div>
+        <div class="circleArea tl operate_btn"></div>
+        <div class="circleArea bl operate_btn"></div>
+        <div class="circleArea tr operate_btn"></div>
+        <div class="circleArea br operate_btn"></div>
+        <div class="rectangleArea t operate_btn"></div>
+        <div class="rectangleArea l operate_btn"></div>
+        <div class="rectangleArea r operate_btn"></div>
+        <div class="rectangleArea b operate_btn"></div>
          </div> `
     return operateContent
   }
   function resetPosition(width, height) {
     let eleClass = ele.attr('class').split(' ')[1]
-    if (eleClass === 'tl') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) + height + 'px',
-        'width': parseInt($(wrapper).css('width')) + width + 'px',
-        'top': parseInt($(wrapper).css('top')) - height + 'px',
-        'left': parseInt($(wrapper).css('left')) - width + 'px',
-      })
-    } else if (eleClass === 'tr') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) + height + 'px',
-        'width': parseInt($(wrapper).css('width')) - width + 'px',
-        'top': parseInt($(wrapper).css('top')) - height + 'px'
-      })
-    } else if (eleClass === 'bl') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) - height + 'px',
-        'width': parseInt($(wrapper).css('width')) + width + 'px',
-        'left': parseInt($(wrapper).css('left')) - width + 'px',
-      })
-    } else if (eleClass === 'br') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) - height + 'px',
-        'width': parseInt($(wrapper).css('width')) - width + 'px',
-      })
-    } else if (eleClass === 't') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) + height + 'px',
-        'top': parseInt($(wrapper).css('top')) - height + 'px',
-      })
-    } else if (eleClass === 'b') {
-      $(wrapper).css({
-        'height': parseInt($(wrapper).css('height')) - height + 'px',
-      })
-    } else if (eleClass === 'l') {
-      $(wrapper).css({
-        'width': parseInt($(wrapper).css('width')) + width + 'px',
-        'left': parseInt($(wrapper).css('left')) - width + 'px',
-      })
-    } else if (eleClass === 'r') {
-      $(wrapper).css({
-        'width': parseInt($(wrapper).css('width')) - width + 'px',
-      })
+    let oldWidth = $(wrapper).width()
+    let oldHeight = $(wrapper).height()
+    let oldTop = parseInt($(wrapper).css('top'))
+    let oldLeft = parseInt($(wrapper).css('left'))
+    switch (eleClass) {
+      case 'tl':
+        $(wrapper).css({
+          'height': oldHeight + height + 'px',
+          'width': oldWidth + width + 'px',
+          'top': oldTop - height + 'px',
+          'left': oldLeft - width + 'px',
+        })
+        break;
+      case 'tr':
+        $(wrapper).css({
+          'height': oldHeight + height + 'px',
+          'width': oldWidth - width + 'px',
+          'top': oldTop - height + 'px'
+        })
+        break;
+      case 'bl':
+        $(wrapper).css({
+          'height': oldHeight - height + 'px',
+          'width': oldWidth + width + 'px',
+          'left': oldLeft - width + 'px',
+        })
+        break;
+      case 'br':
+        $(wrapper).css({
+          'height': oldHeight - height + 'px',
+          'width': oldWidth - width + 'px',
+        })
+        break;
+      case 't':
+        $(wrapper).css({
+          'height': oldHeight + height + 'px',
+          'top': oldTop - height + 'px',
+        })
+        break;
+      case 'b':
+        $(wrapper).css({
+          'height': oldHeight - height + 'px',
+        })
+        break;
+      case 'l':
+        $(wrapper).css({
+          'width': oldWidth + width + 'px',
+          'left': oldLeft - width + 'px',
+        })
+        break;
+      case 'r':
+        $(wrapper).css({
+          'width': oldWidth - width + 'px',
+        })
+        break;
+      default:
+        break;
     }
+    let wrapperWidth = $(wrapper).width()
+    let wrapperHeight = $(wrapper).height()
+    let rectWidth = 10
     $('.t').css({
-      'left': parseInt($(wrapper).css('width')) / 2 - parseInt($('.t').css('width')) / 2
+      'left': wrapperWidth / 2 - rectWidth / 2
     })
     $('.b').css({
-      'left': parseInt($(wrapper).css('width')) / 2 - parseInt($('.t').css('width')) / 2
+      'left': wrapperWidth / 2 - rectWidth / 2
     })
     $('.l').css({
-      'top': parseInt($(wrapper).css('height')) / 2 - parseInt($('.t').css('height')) / 2
+      'top': wrapperHeight / 2 - rectWidth / 2
     })
     $('.r').css({
-      'top': parseInt($(wrapper).css('height')) / 2 - parseInt($('.t').css('height')) / 2
+      'top': wrapperHeight / 2 - rectWidth / 2
     })
   }
+  
 }()

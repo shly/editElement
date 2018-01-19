@@ -1,122 +1,101 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 
 <head>
-    <meta content="text/html" charset="utf-8">
-    <style type="text/css">
-        #dragContainer {
-            width: 120px;
-            height: 80px;
-            position: absolute
+    <meta charset="UTF-8">
+    <meta name="author" content="http://orzcss.com/">
+    <title>24行代码，让你的网页元素任意放大、缩小、拖拽、移动</title>
+    <style>
+        .no_select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: default;
         }
 
-        #drager {
-            width: 100%;
-            height: 100%;
-            background-color: #3A2885;
-            border: 1px solid #dddddd;
-        }
-
-        #zoom {
+        #box {
+            background: red;
+            cursor: pointer;
+            color: #fff;
+            height: 200px;
             position: absolute;
-            width: 20px;
+            width: 200px;
+        }
+
+        #coor {
+            background: #0f0;
+            cursor: move;
+            display: inline-block;
             height: 20px;
-            background-color: #000000;
-            right: 0;
-            bottom: 0;
+            width: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div id="dragContainer">
-        <div id="drager"></div>
-        <div id="zoom"></div>
+    <div id="box" class="no_select">
+        <a id="coor">+</a>
+        移动红色方块，则拖拽红色方块
+        <br>需要放大红色方块则拖拽绿色方块
     </div>
-    <script type="text/javascript">
-        (function (window) {
-            function Drag(drager, dragContainer) {
-                this.drager = $$(drager);
-                this.dragContainer = $$(dragContainer);
-                this.drager.style.cursor = "move";
-                this.DragHandler();
-            }
-            Drag.prototype = {
-                DragHandler: function () {
-                    var drager = this.drager;
-                    var dragContainer = this.dragContainer;
-                    drager.onmousedown = function (e) {
-                        var e = e || window.event;
-                        var oldLeft = dragContainer.offsetLeft;
-                        var oldTop = dragContainer.offsetTop;
-                        var oldX = e.clientX;
-                        var oldY = e.clientY;
-                        document.onmousemove = function (e) {
-                            var e = e || window.event;
-                            var mouseX = e.clientX;
-                            var mouseY = e.clientY;
-                            var newX = parseInt(mouseX) - parseInt(oldX) + parseInt(oldLeft);
-                            var newY = parseInt(mouseY) - parseInt(oldY) + parseInt(oldTop);
-                            dragContainer.style.left = newX + "px";
-                            dragContainer.style.top = newY + "px";
-                        }
-                        document.onmouseup = function (e) {
-                            document.onmousemove = null;
-                            document.onmouseup = null;
-                        }
-                    }
+    <script src="http://www.orzhtml.com/wp-content/themes/orzhtml1.0/jquery/1.8.3/jquery.js?ver=1.0"></script>
+    <script>
+        $(document).on({            
+'mousemove': function (e) {
+                if (!!this.move) {
+                    var posix = !document.move_target ? { 'x': 0, 'y': 0 } : document.move_target.posix,
+                        callback = document.call_down || function () {
+                            $(this.move_target).css({
+                                'top': e.pageY - posix.y,
+                                'left': e.pageX - posix.x
+                            });
+                        };
+                    callback.call(this, e, posix);
+                }
+            }, 'mouseup': function (e) {
+                if (!!this.move) {
+                    var callback = document.call_up || function () { };
+                    callback.call(this, e);
+                    $.extend(this, {
+                        'move': false,
+                        'move_target': null,
+                        'call_down': false,
+                        'call_up': false
+                    });
                 }
             }
-
-            function Zoom(drager, dragContainer, zoom) {
-                this.dragContainer = $$(dragContainer);
-                this.defaultWH = {
-                    "width": this.dragContainer.offsetWidth,
-                    "height": this.dragContainer.offsetHeight
-                };
-                var drag = new Drag(drager, dragContainer);
-                this.zoom = $$(zoom);
-                this.zoom.style.cursor = "se-resize";
-                this.goMove();
-            }
-            Zoom.prototype = {
-                goMove: function () {
-                    var dragContainer = this.dragContainer;
-                    var defaultWH = this.defaultWH;
-                    var zoom = this.zoom;
-                    zoom.onmousedown = function (e) {
-                        var e = e || window.event;
-                        var oldLeft = zoom.offsetLeft;
-                        var oldTop = zoom.offsetTop;
-                        var oldX = e.clientX;
-                        var oldY = e.clientY;
-                        document.onmousemove = function (e) {
-                            var e = e || window.event;
-                            var newX = e.clientX;
-                            var newY = e.clientY;
-                            var w = newX - oldX + oldLeft + zoom.offsetWidth;
-                            var h = newY - oldY + oldTop + zoom.offsetHeight;
-                            w = Math.max(w, defaultWH.width);
-                            h = Math.max(h, defaultWH.height);
-                            dragContainer.style.width = w + "px";
-                            dragContainer.style.height = h + "px";
-                        }
-                        document.onmouseup = function (e) {
-                            document.onmousemove = null;
-                            document.onmouseup = null;
-                        }
-                    }
+        });
+        // 例子测试
+        var $box = $('#box').mousedown(function (e) {
+            var offset = $(this).offset();
+            this.posix = {
+                'x': e.pageX - offset.left,
+                'y': e.pageY - offset.top
+            };
+            $.extend(document, {
+                'move': true,
+                'move_target': this
+            });
+        }).on('mousedown', '#coor', function (e) {
+            var posix = {
+                'w': $box.width(),
+                'h': $box.height(),
+                'x': e.pageX,
+                'y': e.pageY
+            };
+            $.extend(document, {
+                'move': true,
+                'call_down': function (e) {
+                    $box.css({
+                        'width': Math.max(30, e.pageX - posix.x + posix.w),
+                        'height': Math.max(30, e.pageY - posix.y + posix.h)
+                    });
                 }
-            }
-            window.Drag = Drag;
-            window.Zoom = Zoom;
-        })(window)
-
-        new Zoom("drager", "dragContainer", "zoom");
-
-        function $$(id) {
-            return document.getElementById(id);
-        }
+            });
+            return false;
+        });
     </script>
+</body>
 
 </html>
