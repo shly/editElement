@@ -74,6 +74,7 @@ var createElementUtil = {};
         if (operateDiv.css('display') === 'none') {
           $('.operate').hide();
           operateDiv.css('display', 'block');
+          currentWrapper = $(this);
         }
       });
     },
