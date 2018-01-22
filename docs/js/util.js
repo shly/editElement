@@ -87,9 +87,10 @@ var createElementUtil = {};
       styleObj.left = currentWrapper.css('left');
       styleObj.top = currentWrapper.css('top');
       styleObj.border = currentWrapper.css('border');
+      styleObj.background = currentWrapper.css('background');
       return styleObj;
     },
-    getElements: function getElements() {
+    getElementsStyles: function getElementsStyles() {
       var styleLists = [];
       var _this = this;
       var wrappers = $('.wrapper');
@@ -98,6 +99,9 @@ var createElementUtil = {};
         styleLists.push(styleObj);
       });
       return styleLists;
+    },
+    setStyle: function setStyle(key, value) {
+      currentWrapper.css(key, value);
     }
   };
   /** 返回操作块的字符串 */

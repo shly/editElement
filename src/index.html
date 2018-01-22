@@ -17,6 +17,7 @@
   <button class="add">添加一个div</button>
   <button class="get">获取div样式</button>
   <button class="getAll">获取全部div样式</button>
+  <button class="changeColor">修改背景色</button>
   <div class="container"></div>
   <h2>当前样式</h2>
   <p class="currentEleStyle">
@@ -30,7 +31,7 @@
     // import createElementUtil from './js/util.js'
     $('.add').on('click', function () {
       var parent = $('.container')
-      let node = document.createElement('div')
+      let node = $('<div>ddddd</div>')
       var ele = createElementUtil.createAnElement(node, parent)
     })
     $('.get').on('click', function () {
@@ -43,7 +44,7 @@
       $('p.currentEleStyle').append('<p>边框:' + styleObj.border + '</p>')
     })
     $('.getAll').on('click', function () {
-      var styleObjs = createElementUtil.getElements()
+      var styleObjs = createElementUtil.getElementsStyles()
       $('p.currentEleStyle')[0].innerHTML = ''
       styleObjs.forEach(function(item, index){
         $('p.currentEleStyle').append('<h2>'+index+'</h2>')
@@ -53,6 +54,9 @@
         $('p.currentEleStyle').append('<p>高度:' + item.height + '</p>')
         $('p.currentEleStyle').append('<p>边框:' + item.border + '</p>')
       })
+    })
+    $('.changeColor').on('click', function () {
+      createElementUtil.setStyle('background', 'red')
     })
   </script>
 </body>

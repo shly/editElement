@@ -87,9 +87,10 @@ let createElementUtil = {}
       styleObj.left = currentWrapper.css('left')
       styleObj.top = currentWrapper.css('top')
       styleObj.border = currentWrapper.css('border')
+      styleObj.background = currentWrapper.css('background')
       return styleObj
     },
-    getElements () {
+    getElementsStyles () {
       let styleLists = []
       let _this = this
       let wrappers = $('.wrapper')
@@ -98,6 +99,9 @@ let createElementUtil = {}
         styleLists.push(styleObj)
       })
       return styleLists
+    },
+    setStyle (key, value) {
+      currentWrapper.css(key, value)
     }
   }
   /** 返回操作块的字符串 */
