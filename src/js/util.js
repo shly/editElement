@@ -7,15 +7,24 @@ var createElementUtil = {}
   let currentWrapper = {}
   let ele = {}
  
-  var ZoomUtil = {
+  var MouseUtil = {
+    type: 'zoom',
+    init: function (type) {
+      this.type = type
+      this.onMouseDown()
+    },
     onMouseDown: function () {
       pos = {
         x: event.clientX,
         y: event.clientY
       }
       $(document)
-        .on('mousemove', this.onMouseMove)
-        .on('mouseup', this.onMouseUp)
+        .on('mousemove', function () {
+          MouseUtil.onMouseMove()
+        })
+        .on('mouseup', function () {
+          MouseUtil.onMouseUp()
+        })
     },
     onMouseMove: function () {
       let newPos = {
@@ -24,32 +33,11 @@ var createElementUtil = {}
       }
       let width = pos.x - newPos.x
       let height = pos.y - newPos.y
-      resetPosition(width, height)
-      pos = JSON.parse(JSON.stringify(newPos))
-    },
-    onMouseUp: function () {
-      $(document).off('mousemove')
-      $(document).off('mouseup')
-    }
-  }
-  var DragUtil = {
-    onMouseDown: function () {
-      pos = {
-        x: event.clientX,
-        y: event.clientY
+      if (this.type === 'zoom') {
+        resetPosition(width, height)
+      } else {
+        setPosition(width, height)
       }
-      $(document)
-      .on('mousemove', this.onMouseMove)
-        .on('mouseup', this.onMouseUp)
-    },
-    onMouseMove: function () {
-      let newPos = {
-        x: event.clientX,
-        y: event.clientY
-      }
-      let width = pos.x - newPos.x
-      let height = pos.y - newPos.y
-      setPosition(width, height)
       pos = JSON.parse(JSON.stringify(newPos))
     },
     onMouseUp: function () {
@@ -58,7 +46,9 @@ var createElementUtil = {}
     }
   }
   createElementUtil = {
+    /** @description 将元素封装成可操作的元素 */
     createAnElement: function (node, parent) {
+      $('.wrapper').children('.operate').hide()
       let wrapper = document.createElement('div')
       $(wrapper).addClass('wrapper')
       $(wrapper).append(node)
@@ -70,15 +60,24 @@ var createElementUtil = {}
         event.stopImmediatePropagation()
         ele = $(event.target)
         currentWrapper = ele.parents('.wrapper')
-        ZoomUtil.onMouseDown()
+        MouseUtil.init('zoom')
       })
       $(document).on('mousedown', '.wrapper', function (event) {
         event.stopImmediatePropagation()
         ele = $(event.target)
         currentWrapper = ele.parent('.wrapper')
-        DragUtil.onMouseDown()
+        MouseUtil.init('drag')
+      })
+      $(document).on('click', '.wrapper', function (event) {
+        event.stopImmediatePropagation()
+        let operateDiv = $(this).children('.operate')
+        if (operateDiv.css('display')==='none') {
+          $('.operate').hide()
+          operateDiv.css('display', 'block')
+        }
       })
     },
+    /** @description 返回操作后元素的样式 */
     getStyle () {
       let styleObj = {}
       styleObj.width = currentWrapper.css('width')
@@ -89,6 +88,7 @@ var createElementUtil = {}
       return styleObj
     }
   }
+  /** 返回操作块的字符串 */
   function createOperationNode() {
     var operateContent = `<div class="operate">
         <div class="circleArea tl operate_btn"></div>
@@ -102,7 +102,7 @@ var createElementUtil = {}
          </div> `
     return operateContent
   }
-  /** @description 设置缩放位置 */
+  /** @description 设置缩放后位置 */
   function resetPosition(width, height) {
     let eleClass = ele.attr('class').split(' ')[1]
     let oldWidth = currentWrapper.width()
@@ -179,7 +179,7 @@ var createElementUtil = {}
       'top': wrapperHeight / 2 - rectWidth / 2
     })
   }
-  /** @description 设置拖动位置 */
+  /** @description 设置拖动后位置 */
   function setPosition(width, height) {
     let left = parseInt(currentWrapper.css('left'))
     let top = parseInt(currentWrapper.css('top'))

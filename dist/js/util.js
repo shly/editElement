@@ -9,13 +9,22 @@ var createElementUtil = {};
   var currentWrapper = {};
   var ele = {};
 
-  var ZoomUtil = {
+  var MouseUtil = {
+    type: 'zoom',
+    init: function init(type) {
+      this.type = type;
+      this.onMouseDown();
+    },
     onMouseDown: function onMouseDown() {
       pos = {
         x: event.clientX,
         y: event.clientY
       };
-      $(document).on('mousemove', this.onMouseMove).on('mouseup', this.onMouseUp);
+      $(document).on('mousemove', function () {
+        MouseUtil.onMouseMove();
+      }).on('mouseup', function () {
+        MouseUtil.onMouseUp();
+      });
     },
     onMouseMove: function onMouseMove() {
       var newPos = {
@@ -24,30 +33,11 @@ var createElementUtil = {};
       };
       var width = pos.x - newPos.x;
       var height = pos.y - newPos.y;
-      resetPosition(width, height);
-      pos = JSON.parse(JSON.stringify(newPos));
-    },
-    onMouseUp: function onMouseUp() {
-      $(document).off('mousemove');
-      $(document).off('mouseup');
-    }
-  };
-  var DragUtil = {
-    onMouseDown: function onMouseDown() {
-      pos = {
-        x: event.clientX,
-        y: event.clientY
-      };
-      $(document).on('mousemove', this.onMouseMove).on('mouseup', this.onMouseUp);
-    },
-    onMouseMove: function onMouseMove() {
-      var newPos = {
-        x: event.clientX,
-        y: event.clientY
-      };
-      var width = pos.x - newPos.x;
-      var height = pos.y - newPos.y;
-      setPosition(width, height);
+      if (this.type === 'zoom') {
+        resetPosition(width, height);
+      } else {
+        setPosition(width, height);
+      }
       pos = JSON.parse(JSON.stringify(newPos));
     },
     onMouseUp: function onMouseUp() {
@@ -56,7 +46,9 @@ var createElementUtil = {};
     }
   };
   createElementUtil = {
+    /** @description 将元素封装成可操作的元素 */
     createAnElement: function createAnElement(node, parent) {
+      $('.wrapper').children('.operate').hide();
       var wrapper = document.createElement('div');
       $(wrapper).addClass('wrapper');
       $(wrapper).append(node);
@@ -68,15 +60,24 @@ var createElementUtil = {};
         event.stopImmediatePropagation();
         ele = $(event.target);
         currentWrapper = ele.parents('.wrapper');
-        ZoomUtil.onMouseDown();
+        MouseUtil.init('zoom');
       });
       $(document).on('mousedown', '.wrapper', function (event) {
         event.stopImmediatePropagation();
         ele = $(event.target);
         currentWrapper = ele.parent('.wrapper');
-        DragUtil.onMouseDown();
+        MouseUtil.init('drag');
+      });
+      $(document).on('click', '.wrapper', function (event) {
+        event.stopImmediatePropagation();
+        var operateDiv = $(this).children('.operate');
+        if (operateDiv.css('display') === 'none') {
+          $('.operate').hide();
+          operateDiv.css('display', 'block');
+        }
       });
     },
+    /** @description 返回操作后元素的样式 */
     getStyle: function getStyle() {
       var styleObj = {};
       styleObj.width = currentWrapper.css('width');
@@ -87,11 +88,12 @@ var createElementUtil = {};
       return styleObj;
     }
   };
+  /** 返回操作块的字符串 */
   function createOperationNode() {
     var operateContent = '<div class="operate">\n        <div class="circleArea tl operate_btn"></div>\n        <div class="circleArea bl operate_btn"></div>\n        <div class="circleArea tr operate_btn"></div>\n        <div class="circleArea br operate_btn"></div>\n        <div class="rectangleArea t operate_btn"></div>\n        <div class="rectangleArea l operate_btn"></div>\n        <div class="rectangleArea r operate_btn"></div>\n        <div class="rectangleArea b operate_btn"></div>\n         </div> ';
     return operateContent;
   }
-  /** @description 设置缩放位置 */
+  /** @description 设置缩放后位置 */
   function resetPosition(width, height) {
     var eleClass = ele.attr('class').split(' ')[1];
     var oldWidth = currentWrapper.width();
@@ -168,7 +170,7 @@ var createElementUtil = {};
       'top': wrapperHeight / 2 - rectWidth / 2
     });
   }
-  /** @description 设置拖动位置 */
+  /** @description 设置拖动后位置 */
   function setPosition(width, height) {
     var left = parseInt(currentWrapper.css('left'));
     var top = parseInt(currentWrapper.css('top'));
