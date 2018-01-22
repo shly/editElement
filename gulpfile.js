@@ -12,7 +12,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [path.join(__dirname, 'less', 'includes')]
     }))
-    .pipe(gulp.dest('./dist/css/'));
+    .pipe(gulp.dest('./docs/css/'));
 });
 gulp.task('babel', () =>
   gulp.src('./src/js/util.js')
@@ -20,11 +20,11 @@ gulp.task('babel', () =>
     .pipe(babel({
       presets: ['env']
     }))
-    .pipe(gulp.dest('./dist/js/'))
+    .pipe(gulp.dest('./docs/js/'))
 );
 gulp.task('html', () =>
   gulp.src('./src/index.html')
-  .pipe(gulp.dest('./dist/'))
+  .pipe(gulp.dest('./docs/'))
 );
 gulp.task('watch', function () {
   gulp.watch('./src/css/*.less', ['less'])
@@ -35,7 +35,7 @@ gulp.task('browser-sync', function () {
   browserSync.init({
     files: ['**'],
     server: {
-      baseDir: './dist',  // 设置服务器的根目录
+      baseDir: './docs',  // 设置服务器的根目录
     }
   });
 });// 代理
