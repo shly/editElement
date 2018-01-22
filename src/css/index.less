@@ -7,12 +7,17 @@
   height: @defaultDivWidth;
   left: 600px;
   top: 300px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  border: 1px solid black;
   .operate {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    left: -1px;
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
     outline: 1px dashed @borderColor;
     .circleArea {
       width: @width;

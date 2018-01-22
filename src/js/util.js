@@ -4,20 +4,18 @@ var createElementUtil = {}
     'x': '0px',
     'y': '0px'
   }
-  let newObj = {
-    element: {},
-    style: {}
-  }
-  let wrapper = document.createElement('div')
-  $(wrapper).addClass('wrapper')
+  let currentWrapper = {}
   let ele = {}
  
-  var MouseUtil = {
+  var ZoomUtil = {
     onMouseDown: function () {
       pos = {
         x: event.clientX,
         y: event.clientY
       }
+      $(document)
+        .on('mousemove', this.onMouseMove)
+        .on('mouseup', this.onMouseUp)
     },
     onMouseMove: function () {
       let newPos = {
@@ -34,25 +32,61 @@ var createElementUtil = {}
       $(document).off('mouseup')
     }
   }
+  var DragUtil = {
+    onMouseDown: function () {
+      pos = {
+        x: event.clientX,
+        y: event.clientY
+      }
+      $(document)
+      .on('mousemove', this.onMouseMove)
+        .on('mouseup', this.onMouseUp)
+    },
+    onMouseMove: function () {
+      let newPos = {
+        x: event.clientX,
+        y: event.clientY
+      }
+      let width = pos.x - newPos.x
+      let height = pos.y - newPos.y
+      setPosition(width, height)
+      pos = JSON.parse(JSON.stringify(newPos))
+    },
+    onMouseUp: function () {
+      $(document).off('mousemove')
+      $(document).off('mouseup')
+    }
+  }
   createElementUtil = {
-    createAnElement: function (name, parent) {
-      let newElement = document.createElement(name)
-      $(wrapper).append(newElement)
+    createAnElement: function (node, parent) {
+      let wrapper = document.createElement('div')
+      $(wrapper).addClass('wrapper')
+      $(wrapper).append(node)
+      currentWrapper = $(wrapper)
       let operateContent = createOperationNode()
       $(wrapper).append($(operateContent))
       parent.append(wrapper)
-      $(document).on('mousedown', '.operate_btn', function () {
+      $(document).on('mousedown', '.operate_btn', function (event) {
+        event.stopImmediatePropagation()
         ele = $(event.target)
-        MouseUtil.onMouseDown()
-        $(document).on('mousemove', function () {
-          MouseUtil.onMouseMove()
-        }).on('mouseup', function () {
-          MouseUtil.onMouseUp()
-        })
+        currentWrapper = ele.parents('.wrapper')
+        ZoomUtil.onMouseDown()
       })
-      newObj.element = ele
-      newObj.style = wrapper.style
-      return newObj
+      $(document).on('mousedown', '.wrapper', function (event) {
+        event.stopImmediatePropagation()
+        ele = $(event.target)
+        currentWrapper = ele.parent('.wrapper')
+        DragUtil.onMouseDown()
+      })
+    },
+    getStyle () {
+      let styleObj = {}
+      styleObj.width = currentWrapper.css('width')
+      styleObj.height = currentWrapper.css('height')
+      styleObj.left = currentWrapper.css('left')
+      styleObj.top = currentWrapper.css('top')
+      styleObj.border = currentWrapper.css('border')
+      return styleObj
     }
   }
   function createOperationNode() {
@@ -68,15 +102,16 @@ var createElementUtil = {}
          </div> `
     return operateContent
   }
+  /** @description 设置缩放位置 */
   function resetPosition(width, height) {
     let eleClass = ele.attr('class').split(' ')[1]
-    let oldWidth = $(wrapper).width()
-    let oldHeight = $(wrapper).height()
-    let oldTop = parseInt($(wrapper).css('top'))
-    let oldLeft = parseInt($(wrapper).css('left'))
+    let oldWidth = currentWrapper.width()
+    let oldHeight = currentWrapper.height()
+    let oldTop = parseInt(currentWrapper.css('top'))
+    let oldLeft = parseInt(currentWrapper.css('left'))
     switch (eleClass) {
       case 'tl':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight + height + 'px',
           'width': oldWidth + width + 'px',
           'top': oldTop - height + 'px',
@@ -84,65 +119,73 @@ var createElementUtil = {}
         })
         break;
       case 'tr':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight + height + 'px',
           'width': oldWidth - width + 'px',
           'top': oldTop - height + 'px'
         })
         break;
       case 'bl':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight - height + 'px',
           'width': oldWidth + width + 'px',
           'left': oldLeft - width + 'px',
         })
         break;
       case 'br':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight - height + 'px',
           'width': oldWidth - width + 'px',
         })
         break;
       case 't':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight + height + 'px',
-          'top': oldTop - height + 'px',
+          'top': oldTop - height + 'px'
         })
         break;
       case 'b':
-        $(wrapper).css({
+        currentWrapper.css({
           'height': oldHeight - height + 'px',
         })
         break;
       case 'l':
-        $(wrapper).css({
+        currentWrapper.css({
           'width': oldWidth + width + 'px',
           'left': oldLeft - width + 'px',
         })
         break;
       case 'r':
-        $(wrapper).css({
+        currentWrapper.css({
           'width': oldWidth - width + 'px',
         })
         break;
       default:
         break;
     }
-    let wrapperWidth = $(wrapper).width()
-    let wrapperHeight = $(wrapper).height()
+    let wrapperWidth = currentWrapper.width()
+    let wrapperHeight = currentWrapper.height()
     let rectWidth = 10
-    $('.t').css({
+    currentWrapper.find('.t').css({
       'left': wrapperWidth / 2 - rectWidth / 2
     })
-    $('.b').css({
+    currentWrapper.find('.b').css({
       'left': wrapperWidth / 2 - rectWidth / 2
     })
-    $('.l').css({
+    currentWrapper.find('.l').css({
       'top': wrapperHeight / 2 - rectWidth / 2
     })
-    $('.r').css({
+    currentWrapper.find('.r').css({
       'top': wrapperHeight / 2 - rectWidth / 2
     })
   }
-  
+  /** @description 设置拖动位置 */
+  function setPosition(width, height) {
+    let left = parseInt(currentWrapper.css('left'))
+    let top = parseInt(currentWrapper.css('top'))
+    currentWrapper.css({
+      'left': left - width + 'px',
+      'top': top - height + 'px',
+    })
+  }
 }()

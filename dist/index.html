@@ -15,6 +15,7 @@
 </head>
 <body>
   <button class="add">添加一个div</button>
+  <button class="get">获取div样式</button>
   <div class="container"></div>
   <h2>当前样式</h2>
   <p class="currentEleStyle">
@@ -22,17 +23,22 @@
   <script src="../js/jquery-3.2.1.min.js"></script>
   <script src="../js/util.js"></script>
   <script>
-    $(function () {
-      $('.add').click()
-    })
+    // $(function () {
+    //   $('.add').click()
+    // })
     $('.add').on('click', function () {
       var parent = $('.container')
-      var ele = createElementUtil.createAnElement('div', parent)
+      let node = document.createElement('div')
+      var ele = createElementUtil.createAnElement(node, parent)
+     
       $('p.currentEleStyle')[0].innerHTML = ''
-      $('p.currentEleStyle')[0].append('坐标（x）:' + ele.style.left)
-      $('p.currentEleStyle')[0].append('坐标（y）:' + ele.style.top)
-      $('p.currentEleStyle')[0].append('宽度:' + ele.style.width)
-      $('p.currentEleStyle')[0].append('高度:' + ele.style.height)
+      // $('p.currentEleStyle')[0].append('坐标（x）:' + ele.style.left)
+      // $('p.currentEleStyle')[0].append('坐标（y）:' + ele.style.top)
+      // $('p.currentEleStyle')[0].append('宽度:' + ele.style.width)
+      // $('p.currentEleStyle')[0].append('高度:' + ele.style.height)
+    })
+    $('.get').on('click', function () {
+      var styleObj = createElementUtil.getStyle()
     })
   </script>
 </body>
