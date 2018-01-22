@@ -14,6 +14,7 @@
   </style>
 </head>
 <body>
+  <button class="addImage">添加一个图片</button>
   <button class="add">添加一个div</button>
   <button class="get">获取div样式</button>
   <button class="getAll">获取全部div样式</button>
@@ -28,10 +29,14 @@
     // $(function () {
     //   $('.add').click()
     // })
-    // import createElementUtil from './js/util.js'
     $('.add').on('click', function () {
       var parent = $('.container')
-      let node = $('<div>ddddd</div>')
+      let node = $('<div></div>')
+      var ele = createElementUtil.createAnElement(node, parent)
+    })
+    $('.addImage').on('click', function () {
+      var parent = $('.container')
+      let node = $('<img src="./img/1111.png"/>')
       var ele = createElementUtil.createAnElement(node, parent)
     })
     $('.get').on('click', function () {

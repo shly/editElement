@@ -35,6 +35,7 @@ let createElementUtil = {}
       let height = pos.y - newPos.y
       if (this.type === 'zoom') {
         resetPosition(width, height)
+        synchroStyle()
       } else {
         setPosition(width, height)
       }
@@ -52,17 +53,20 @@ let createElementUtil = {}
       let wrapper = document.createElement('div')
       $(wrapper).addClass('wrapper')
       $(wrapper).append(node)
+      node.addClass('target_node')
       currentWrapper = $(wrapper)
       let operateContent = createOperationNode()
       $(wrapper).append($(operateContent))
       parent.append(wrapper)
+      synchroStyle()
+
       $(document).on('mousedown', '.operate_btn', function (event) {
         event.stopImmediatePropagation()
         ele = $(event.target)
         currentWrapper = ele.parents('.wrapper')
         MouseUtil.init('zoom')
       })
-      $(document).on('mousedown', '.wrapper', function (event) {
+      $(document).on('mousedown', '.operate', function (event) {
         event.stopImmediatePropagation()
         ele = $(event.target)
         currentWrapper = ele.parent('.wrapper')
@@ -88,6 +92,7 @@ let createElementUtil = {}
       styleObj.top = currentWrapper.css('top')
       styleObj.border = currentWrapper.css('border')
       styleObj.background = currentWrapper.css('background')
+      styleObj.color = currentWrapper.css('color')
       return styleObj
     },
     getElementsStyles () {
@@ -202,6 +207,14 @@ let createElementUtil = {}
     currentWrapper.css({
       'left': left - width + 'px',
       'top': top - height + 'px',
+    })
+  }
+  /** 同步目标对象与可操作对象的css */
+  function synchroStyle () {
+    let styleObj = createElementUtil.getStyle(currentWrapper)
+    currentWrapper.children('.target_node').css({
+      'width': styleObj.width,
+      'height': styleObj.height
     })
   }
 }()
