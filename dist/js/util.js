@@ -79,7 +79,8 @@ var createElementUtil = {};
       });
     },
     /** @description 返回操作后元素的样式 */
-    getStyle: function getStyle() {
+    getStyle: function getStyle(wrapper) {
+      currentWrapper = wrapper || currentWrapper;
       var styleObj = {};
       styleObj.width = currentWrapper.css('width');
       styleObj.height = currentWrapper.css('height');
@@ -87,6 +88,16 @@ var createElementUtil = {};
       styleObj.top = currentWrapper.css('top');
       styleObj.border = currentWrapper.css('border');
       return styleObj;
+    },
+    getElements: function getElements() {
+      var styleLists = [];
+      var _this = this;
+      var wrappers = $('.wrapper');
+      $.each(wrappers, function (index, item) {
+        var styleObj = _this.getStyle($(item));
+        styleLists.push(styleObj);
+      });
+      return styleLists;
     }
   };
   /** 返回操作块的字符串 */

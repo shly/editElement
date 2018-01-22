@@ -1,4 +1,4 @@
-var createElementUtil = {}
+let createElementUtil = {}
 !function() {
   var pos = {
     'x': '0px',
@@ -79,7 +79,8 @@ var createElementUtil = {}
       })
     },
     /** @description 返回操作后元素的样式 */
-    getStyle () {
+    getStyle(wrapper) {
+      currentWrapper = wrapper || currentWrapper
       let styleObj = {}
       styleObj.width = currentWrapper.css('width')
       styleObj.height = currentWrapper.css('height')
@@ -87,6 +88,16 @@ var createElementUtil = {}
       styleObj.top = currentWrapper.css('top')
       styleObj.border = currentWrapper.css('border')
       return styleObj
+    },
+    getElements () {
+      let styleLists = []
+      let _this = this
+      let wrappers = $('.wrapper')
+      $.each(wrappers, function (index, item) {
+        let styleObj = _this.getStyle($(item))
+        styleLists.push(styleObj)
+      })
+      return styleLists
     }
   }
   /** 返回操作块的字符串 */

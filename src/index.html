@@ -16,6 +16,7 @@
 <body>
   <button class="add">添加一个div</button>
   <button class="get">获取div样式</button>
+  <button class="getAll">获取全部div样式</button>
   <div class="container"></div>
   <h2>当前样式</h2>
   <p class="currentEleStyle">
@@ -26,19 +27,32 @@
     // $(function () {
     //   $('.add').click()
     // })
+    // import createElementUtil from './js/util.js'
     $('.add').on('click', function () {
       var parent = $('.container')
       let node = document.createElement('div')
       var ele = createElementUtil.createAnElement(node, parent)
-     
-      $('p.currentEleStyle')[0].innerHTML = ''
-      // $('p.currentEleStyle')[0].append('坐标（x）:' + ele.style.left)
-      // $('p.currentEleStyle')[0].append('坐标（y）:' + ele.style.top)
-      // $('p.currentEleStyle')[0].append('宽度:' + ele.style.width)
-      // $('p.currentEleStyle')[0].append('高度:' + ele.style.height)
     })
     $('.get').on('click', function () {
       var styleObj = createElementUtil.getStyle()
+      $('p.currentEleStyle')[0].innerHTML = ''
+      $('p.currentEleStyle').append('<p>坐标（x）:' + styleObj.left + '</p>')
+      $('p.currentEleStyle').append('<p>坐标（y）:' + styleObj.top + '</p>')
+      $('p.currentEleStyle').append('<p>宽度:' + styleObj.width + '</p>')
+      $('p.currentEleStyle').append('<p>高度:' + styleObj.height + '</p>')
+      $('p.currentEleStyle').append('<p>边框:' + styleObj.border + '</p>')
+    })
+    $('.getAll').on('click', function () {
+      var styleObjs = createElementUtil.getElements()
+      $('p.currentEleStyle')[0].innerHTML = ''
+      styleObjs.forEach(function(item, index){
+        $('p.currentEleStyle').append('<h2>'+index+'</h2>')
+        $('p.currentEleStyle').append('<p>坐标（x）:' + item.left + '</p>')
+        $('p.currentEleStyle').append('<p>坐标（y）:' + item.top + '</p>')
+        $('p.currentEleStyle').append('<p>宽度:' + item.width + '</p>')
+        $('p.currentEleStyle').append('<p>高度:' + item.height + '</p>')
+        $('p.currentEleStyle').append('<p>边框:' + item.border + '</p>')
+      })
     })
   </script>
 </body>
